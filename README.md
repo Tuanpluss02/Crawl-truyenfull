@@ -27,4 +27,5 @@ This is a Python script for web scraping the website TruyenFull.vn to retrieve i
 
 Then input the number of pages of completed novels that you would like to retrieve information for.
 The script will output a progress bar for each page being scraped and will save the results to an Excel file in the `output` folder.
-Note: The script may take some time to complete depending on the number of pages being scraped. Additionally, the website may block your IP address if too many requests are made in a short period of time. To avoid this, the script has a delay of 1 second after every 50 pages scraped.
+
+**Note**: The script may take some time to complete depending on the number of pages being scraped. Additionally, the website may block your IP address if too many requests are made in a short period of time. To avoid this, the script has a delay of 1 second after every 50 pages scraped.
