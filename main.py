@@ -16,12 +16,6 @@ truyen_link_out = []
 truyen_detail_out = []
 
 
-# async def fetch(session, url):
-#     async with session.get(url) as response:
-#         content = await response.read()
-#         decoded_content = content.decode('utf-8', errors='replace')
-#         return decoded_content
-
 async def fetch(session, url, retries=3, delay=0.5):
     for i in range(retries):
         try:
@@ -34,9 +28,7 @@ async def fetch(session, url, retries=3, delay=0.5):
             await asyncio.sleep(delay)
 
 async def get_truyen_info(url, session, loop):
-    async with session.get(url) as response:
-        html = await response.text()
-
+    html = await fetch(session, url)
     soup = bs4.BeautifulSoup(html, "lxml")
     list_truyen = soup.find('div', class_='list-truyen')
 
@@ -57,20 +49,6 @@ async def get_truyen_detail(url, session):
     truyen_detail = ' '.join(th.text for th in list_truyen.select('div.small')) if list_truyen else 'bug'
     return truyen_detail
 
-# async def main():
-#     async with aiohttp.ClientSession() as session:
-#         tasks = [get_truyen_info(f"https://truyenfull.vn/danh-sach/truyen-full/trang-{page_num}", session, asyncio.get_running_loop()) for page_num in range(1, limit + 1)]
-
-#         start_time = time()
-
-#         # Create a progress bar using tqdm
-#         with tqdm(total=len(tasks)) as pbar:
-#             for task in asyncio.as_completed(tasks):
-#                 await task
-#                 pbar.update(1)
-
-#         elapsed_time = time() - start_time
-#         print(f"Task completed in {elapsed_time:.2f} seconds.")
 
 async def main():
     async with aiohttp.ClientSession() as session:
@@ -79,13 +57,11 @@ async def main():
         for i in range(1, limit+1, 50):
             tasks = [get_truyen_info(f"https://truyenfull.vn/danh-sach/truyen-full/trang-{page_num}", session, asyncio.get_running_loop()) for page_num in range(i, min(i+50, limit+1))]
 
-            # Create a progress bar using tqdm
             with tqdm(total=len(tasks)) as pbar:
                 for task in asyncio.as_completed(tasks):
                     await task
                     pbar.update(1)
 
-            # Delay for 1 second after processing 50 pages
             if i % 50 == 0:
                 print("Delay....")
                 await asyncio.sleep(1)
@@ -107,6 +83,5 @@ if __name__ == '__main__':
     if not os.path.exists(output_folder):
         os.makedirs(output_folder)
 
-    # # Use multiprocessing to write the DataFrame to disk
     with Pool(processes=cpu_count()) as pool:
         pool.apply(df.to_excel, args=(os.path.join(output_folder, file_name),), kwds={'engine': 'xlsxwriter'})
