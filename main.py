@@ -74,7 +74,7 @@ async def main():
 if __name__ == '__main__':
     asyncio.run(main())
 
-    output_folder = '01_output'
+    output_folder = 'output'
     file_name = 'result_' + str(limit) + '_page.xlsx'
     truyen_title_out = [title for i, title in enumerate(truyen_title_out) if i < len(truyen_detail_out)]
     truyen_link_out = [link for i, link in enumerate(truyen_link_out) if i < len(truyen_detail_out)]
